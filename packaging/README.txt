@@ -36,9 +36,11 @@ Room       0 to 100 %. Reflections and reverb of a medium room. / 中くらい�
 Quality    Low, Medium or High (1st, 2nd or 3rd order Ambisonics). / 方向の再現の細かさ
 
 For headphones. The latency is 256 samples and is reported to the DAW.
-Supported sample rates: 44.1, 48, 88.2, 96, 176.4 and 192 kHz.
+Common sample rates from 22.05 to 384 kHz (44.1, 48, 88.2, 96, 176.4, 192 kHz and others) are spatialized.
+At a rate Resonance Audio cannot handle, the plug-in passes the input through as mono, with the same latency.
 ヘッドホン向けの処理です。レイテンシーは 256 サンプルで、DAW に報告します。
-対応するサンプルレートは 44.1、48、88.2、96、176.4、192 kHz です。
+22.05 から 384 kHz までの一般的なサンプルレート (44.1、48、88.2、96、176.4、192 kHz など) で立体化します。
+Resonance Audio が扱えない値では、立体化せずに原音 (左右の平均) を同じ遅れで出します。
 
 Licenses / ライセンス
 --------------------

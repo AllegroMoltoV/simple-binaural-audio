@@ -55,6 +55,8 @@ bool BinauralEngine::isSupportedSampleRate(double sampleRate)
 bool BinauralEngine::prepare(double sampleRate)
 {
 	release();
+	ready_ = true;
+	reset();
 	if (!isSupportedSampleRate(sampleRate))
 		return false;
 	api_.reset(vraudio::CreateResonanceAudioApi(2, kBlock, int(sampleRate)));
@@ -70,13 +72,13 @@ bool BinauralEngine::prepare(double sampleRate)
 	api_->SetReflectionProperties(vraudio::ComputeReflectionProperties(room));
 	api_->SetReverbProperties(vraudio::ComputeReverbProperties(room));
 	api_->EnableRoomEffects(true);
-	reset();
 	return true;
 }
 
 void BinauralEngine::release()
 {
 	api_.reset();
+	ready_ = false;
 	sources_ = {-1, -1, -1};
 }
 
@@ -124,6 +126,11 @@ void BinauralEngine::applyParams()
 
 void BinauralEngine::renderBlock()
 {
+	if (!api_) {
+		for (size_t i = 0; i < kBlock; ++i)
+			rendered_[2 * i] = rendered_[2 * i + 1] = input_[i];
+		return;
+	}
 	if (paramsChanged_)
 		applyParams();
 	// Only the source of the selected quality gets audio. The others get silence so that a quality change
@@ -136,7 +143,7 @@ void BinauralEngine::renderBlock()
 
 void BinauralEngine::process(const float *inL, const float *inR, float *outL, float *outR, uint32_t frames)
 {
-	if (!api_) {
+	if (!ready_) {
 		std::fill(outL, outL + frames, 0.0f);
 		std::fill(outR, outR + frames, 0.0f);
 		return;
