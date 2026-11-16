@@ -28,15 +28,17 @@ public:
 	BinauralEngine(const BinauralEngine &) = delete;
 	BinauralEngine &operator=(const BinauralEngine &) = delete;
 
-	// Resonance Audio aborts the process for sample rates its resampler cannot convert from 48 kHz,
-	// so the plug-in asks here before prepare().
+	// Resonance Audio aborts the process for sample rates its resampler cannot convert from 48 kHz.
 	static bool isSupportedSampleRate(double sampleRate);
 
-	// Allocates the renderer. Returns false for an unsupported sample rate. Not real-time safe.
+	// Allocates the renderer. Not real-time safe. At a sample rate Resonance Audio cannot handle, the engine
+	// does not create the renderer and passes the input through as mono, delayed by the same kBlock frames,
+	// because a host may activate the plug-in at any rate (the VST 3 validator tries 1234.5678 Hz).
+	// Returns whether the input is spatialized.
 	bool prepare(double sampleRate);
 	void release();
 	void reset();
-	bool prepared() const
+	bool spatialized() const
 	{
 		return api_ != nullptr;
 	}
@@ -45,6 +47,7 @@ public:
 	void setParams(double azimuth, double elevation, double distance, double room, int quality);
 
 	// Reads stereo input and writes binaural stereo output. The buffers may be the same. Real-time safe.
+	// Before prepare(), the output is silence.
 	void process(const float *inL, const float *inR, float *outL, float *outR, uint32_t frames);
 
 	static int clampQuality(int quality);
@@ -54,6 +57,7 @@ private:
 	void applyParams();
 
 	std::unique_ptr<vraudio::ResonanceAudioApi> api_;
+	bool ready_ = false;
 	std::array<int, 3> sources_{-1, -1, -1};
 
 	double azimuth_ = 0.0, elevation_ = 0.0, distance_ = 1.0, room_ = 0.0;

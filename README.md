@@ -25,7 +25,7 @@ A binaural spatializer for DAWs. It places the input around the listener by dire
 
 - ステレオの入力は、左右を平均して 1 つの音源にします。出力はヘッドホン向けのステレオです。
 - レイテンシーは 256 サンプルです (48 kHz で約 5.3 ms)。DAW に報告するため、DAW の遅延補正で前後の位置がそろいます。
-- サンプルレートは 44.1 kHz、48 kHz、88.2 kHz、96 kHz、176.4 kHz、192 kHz に対応します。それ以外のサンプルレートでは、プラグインが起動を断ります。
+- サンプルレートは 22.05 kHz から 384 kHz までの一般的な値 (44.1 kHz、48 kHz、88.2 kHz、96 kHz、176.4 kHz、192 kHz など) で立体化します。Resonance Audio が扱えない値では、立体化せずに、左右を平均した原音を同じ 256 サンプル遅らせて出します。
 - 処理の重さは、手元の Windows の計測で、48 kHz の High で実時間の約 0.7 % です。
 - 通信しません。音声やデータを外部へ送りません。
 
@@ -80,7 +80,7 @@ ctest --test-dir build -C Release
 
 Resonance Audio は、上流のリポジトリが 2023 年に更新を止めています。このプラグインは、Qt が自身の [qtmultimedia](https://github.com/qt/qtmultimedia/tree/5d5bb219c326e8ea796643e405ab6ae0a05483e6/src/3rdparty) に取り込んで修正を当てている版を、コミットと SHA-256 を固定して構成の時点で取得します。Eigen と pffft も、Qt がそこで使っている版 (Eigen 5.0.1、pffft 02fe7715) を使います。Qt 自体はビルドしません。
 
-単体テスト `tests/binaural-test.cpp` では、左右の音量差と到達時間の差 (右の音源で右が約 10 dB 大きく、約 0.77 ms 早い)、報告したレイテンシー、DAW のブロック長によらない出力、対応しないサンプルレートを断ること、方向を急に変えたときのクリックの無さを確かめます。CI では、単体テストに加えて、[pluginval](https://github.com/Tracktion/pluginval) と [clap-validator](https://github.com/free-audio/clap-validator) で検証します。pluginval は VST 3 SDK の validator を内蔵しており、あわせて実行します。
+単体テスト `tests/binaural-test.cpp` では、左右の音量差と到達時間の差 (右の音源で右が約 10 dB 大きく、約 0.77 ms 早い)、報告したレイテンシー、DAW のブロック長によらない出力、扱えないサンプルレートで落ちずに原音を通すこと、方向を急に変えたときのクリックの無さを確かめます。CI では、単体テストに加えて、[pluginval](https://github.com/Tracktion/pluginval) と [clap-validator](https://github.com/free-audio/clap-validator) で検証します。pluginval は VST 3 SDK の validator を内蔵しており、あわせて実行します。
 
 ## ライセンス
 

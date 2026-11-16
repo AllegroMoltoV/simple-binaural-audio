@@ -112,9 +112,8 @@ void pluginDestroy(const clap_plugin *plugin)
 bool pluginActivate(const clap_plugin *plugin, double sampleRate, uint32_t, uint32_t)
 {
 	auto *p = self(plugin);
-	// Resonance Audio aborts the process for unsupported sample rates, so the plug-in refuses them here.
-	if (!p->engine.prepare(sampleRate))
-		return false;
+	// At a sample rate Resonance Audio cannot handle, the engine passes the input through instead.
+	p->engine.prepare(sampleRate);
 	p->active = true;
 	return true;
 }

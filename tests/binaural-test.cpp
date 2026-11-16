@@ -156,12 +156,30 @@ void testSampleRates()
 {
 	for (double rate : {44100.0, 48000.0, 88200.0, 96000.0, 176400.0, 192000.0}) {
 		sbn::BinauralEngine engine;
-		check(engine.prepare(rate), "supported sample rate", rate);
+		check(engine.prepare(rate) && engine.spatialized(), "supported sample rate", rate);
 	}
-	// Resonance Audio aborts for these, so the engine must refuse them before creating the renderer.
-	for (double rate : {47999.0, 44100.5, 1000.0}) {
+	// Resonance Audio aborts for these. The engine must not create the renderer, and passes the input
+	// through as mono, delayed by the reported latency. 1234.5678 Hz is one of the rates of the VST 3 validator.
+	const size_t block = sbn::BinauralEngine::kBlock;
+	for (double rate : {47999.0, 44100.5, 1234.5678}) {
 		sbn::BinauralEngine engine;
-		check(!engine.prepare(rate) && !engine.prepared(), "unsupported sample rate is refused", rate);
+		const bool spatial = engine.prepare(rate);
+		std::vector<float> l(block * 3, 0.25f), r(l.size(), 0.75f), outL(l.size()), outR(l.size());
+		engine.process(l.data(), r.data(), outL.data(), outR.data(), uint32_t(l.size()));
+		const bool delayed = outL[block - 1] == 0.0f && outL[block] == 0.5f && outR[block] == 0.5f;
+		check(!spatial && !engine.spatialized() && delayed, "unsupported sample rate passes the input through", rate);
+	}
+	// Every rate the VST 3 validator tries (public.sdk/source/vst/testsuite/processing/processformat.cpp)
+	// runs without aborting the process.
+	for (double rate : {22050.0, 32000.0, 44100.0, 48000.0, 88200.0, 96000.0, 192000.0, 384000.0, 1234.5678,
+			    12345.678, 123456.78, 1234567.8}) {
+		sbn::BinauralEngine engine;
+		engine.prepare(rate);
+		engine.setParams(45.0, 10.0, 2.0, 0.5, 2);
+		std::vector<float> in(block * 4, 0.1f), outL(in.size()), outR(in.size());
+		engine.process(in.data(), in.data(), outL.data(), outR.data(), uint32_t(in.size()));
+		check(std::isfinite(outL.back()) && std::isfinite(outR.back()), "runs at a rate of the VST 3 validator", rate,
+		      engine.spatialized() ? 1.0 : 0.0);
 	}
 }
 
