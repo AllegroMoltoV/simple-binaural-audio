@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Simple Binaural">
+  <rect width="512" height="512" rx="96" fill="#1f2433"/>
+  <path d="M86.0 295.6 A176 176 0 0 1 86.0 204.4" fill="none" stroke="#ff9f43" stroke-width="12" stroke-linecap="round"/>
+  <path d="M50.6 293.7 A210 210 0 0 1 50.6 206.3" fill="none" stroke="#ff9f43" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <path d="M96.5 175.6 A176 176 0 0 1 155.1 105.8" fill="none" stroke="#4fc3f7" stroke-width="12" stroke-linecap="round"/>
+  <path d="M70.6 151.4 A210 210 0 0 1 126.7 84.5" fill="none" stroke="#4fc3f7" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <path d="M195.8 84.6 A176 176 0 0 1 286.6 76.7" fill="none" stroke="#f06292" stroke-width="12" stroke-linecap="round"/>
+  <path d="M194.6 49.2 A210 210 0 0 1 281.6 41.6" fill="none" stroke="#f06292" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <path d="M330.4 90.5 A176 176 0 0 1 400.2 149.1" fill="none" stroke="#9ccc65" stroke-width="12" stroke-linecap="round"/>
+  <path d="M354.6 64.6 A210 210 0 0 1 421.5 120.7" fill="none" stroke="#9ccc65" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <path d="M426.0 204.4 A176 176 0 0 1 426.0 295.6" fill="none" stroke="#ffd54f" stroke-width="12" stroke-linecap="round"/>
+  <path d="M461.4 206.3 A210 210 0 0 1 461.4 293.7" fill="none" stroke="#ffd54f" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <path d="M155.1 394.2 A176 176 0 0 1 96.5 324.4" fill="none" stroke="#b39ddb" stroke-width="12" stroke-linecap="round"/>
+  <path d="M126.7 415.5 A210 210 0 0 1 70.6 348.6" fill="none" stroke="#b39ddb" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <rect x="236" y="380" width="40" height="70" rx="8" fill="#8a93a6"/>
+  <rect x="196" y="440" width="120" height="20" rx="10" fill="#8a93a6"/>
+  <path d="M256 132 C318 132 346 178 346 236 C346 298 308 356 256 356 C204 356 166 298 166 236 C166 178 194 132 256 132 Z" fill="#e9e4da"/>
+  <path d="M168 214 C140 214 134 238 136 258 C138 284 150 298 172 296 Z" fill="#d6cfc2"/>
+  <path d="M344 214 C372 214 378 238 376 258 C374 284 362 298 340 296 Z" fill="#d6cfc2"/>
+  <circle cx="154" cy="256" r="11" fill="#2b2f3a"/>
+  <circle cx="358" cy="256" r="11" fill="#2b2f3a"/>
+</svg>
