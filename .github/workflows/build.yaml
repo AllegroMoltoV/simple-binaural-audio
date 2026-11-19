@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2022
             platform: windows-x64
             # No generator name: CMake picks the newest Visual Studio on the runner image.
             configure: -A x64
@@ -108,10 +108,24 @@ jobs:
     outputs:
       version: ${{ steps.package.outputs.version }}
 
+  # The unit test under AddressSanitizer and UndefinedBehaviorSanitizer. The plugin modules are not built with them.
+  sanitize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build and test
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSBA_SANITIZE=ON
+          cmake --build build --parallel --target binaural-test
+          ./build/binaural-test
+
   release:
-    needs: build
+    needs: [build, sanitize]
     if: github.ref_type == 'tag'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(simple-binaural-audio VERSION 1.0.0 LANGUAGES C CXX)
+project(simple-binaural-audio VERSION 1.0.1 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,6 +11,15 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
+
+option(SBA_SANITIZE "Build the unit test with AddressSanitizer and UndefinedBehaviorSanitizer (GCC and Clang only)" OFF)
+
+# Hardening applies to every compiled source, including the libraries that FetchContent adds below.
+if(MSVC)
+  add_compile_options(/GS /guard:cf)
+else()
+  add_compile_options(-fstack-protector-strong -D_FORTIFY_SOURCE=2)
+endif()
 
 include(FetchContent)
 # Resonance Audio with the patches Qt applies, and the Eigen and pffft versions Qt uses with it, from the
@@ -146,7 +155,11 @@ make_clapfirst_plugins(
   ASSET_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/assets
 )
 
-if(NOT MSVC)
+if(MSVC)
+  foreach(module IN ITEMS simple-binaural_clap simple-binaural_vst3)
+    target_link_options(${module} PRIVATE /guard:cf /DYNAMICBASE /HIGHENTROPYVA)
+  endforeach()
+else()
   foreach(module IN ITEMS simple-binaural_clap simple-binaural_vst3)
     # The statically linked C++ runtime keeps the plugins independent of the libstdc++ version of the
     # distribution, and stays hidden. --exclude-libs,ALL would also hide the VST 3 module entry points
@@ -199,4 +212,11 @@ if(BUILD_TESTING)
   target_include_directories(binaural-test PRIVATE src)
   target_link_libraries(binaural-test PRIVATE resonance-audio)
   add_test(NAME binaural COMMAND binaural-test)
+  # The sanitizers cover the unit test only. clap-wrapper links the VST 3 module with --no-undefined,
+  # which the sanitizer runtimes do not satisfy.
+  if(SBA_SANITIZE AND NOT MSVC)
+    set(sanitize_flags -fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer)
+    target_compile_options(binaural-test PRIVATE ${sanitize_flags})
+    target_link_options(binaural-test PRIVATE -fsanitize=address,undefined)
+  endif()
 endif()

@@ -1,4 +1,8 @@
 {
   "name": "Simple Binaural",
-  "category": "effect"
+  "category": "effect",
+  "paidFeatures": false,
+  "paidServices": [],
+  "restrictedAssets": false,
+  "supportUrl": "https://github.com/sponsors/AllegroMoltoV"
 }

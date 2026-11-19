@@ -103,9 +103,13 @@ MIT License です。[LICENSE](LICENSE) を参照してください。
 
 Eigen は変更せずに使っています。使ったソースは、上の qtmultimedia のコミットの `src/3rdparty/eigen` にあります。
 
-頭部伝達関数は、University of York の SADIE プロジェクトの SADIE HRTF Database (2016) を使っています。
+頭部伝達関数は、University of York の SADIE プロジェクトの SADIE HRTF Database (2016) を使っています。このデータは Apache-2.0 で公開されており、商用の利用を禁じる制限はありません。提供元は、元のデータを出典として示すことを求めています。
 
 VST is a registered trademark of Steinberg Media Technologies GmbH.
+
+## 料金と有料サービス
+
+このプラグインは無料です。支払いで解放する機能は無く、別に契約する有料サービスも要りません。開発を支援していただける場合は、GitHub Sponsors (https://github.com/sponsors/AllegroMoltoV) から受け付けています。支援の有無で機能は変わりません。
 
 ## AI 利用開示
 
@@ -114,6 +118,11 @@ VST is a registered trademark of Steinberg Media Technologies GmbH.
 The source code, workflow, documentation, and logo of this plugin were written with Anthropic Claude Code. The author decided the requirements, reviewed the logo, and approved each external operation.
 
 ## 更新履歴
+
+### 1.0.1
+
+- 音のプラグイン倉庫くんの宣言ファイル `.audio-soko-kun/config.json` に、有料の機能・有料サービス・同梱素材の制限が無いことと、支援のページを申告しました。README に料金と有料サービスの節と、SADIE HRTF Database のライセンスの説明を足しました。
+- ビルドの安全策として、スタックの保護 (Windows は `/GS` と `/guard:cf`、Linux は `-fstack-protector-strong` と `_FORTIFY_SOURCE`) を明示し、ユニットテストを AddressSanitizer と UndefinedBehaviorSanitizer で動作させる選択肢 `SBA_SANITIZE` と CI のジョブを足しました。CI の Windows のビルドとリリースのランナーの版を固定しました。
 
 ### 1.0.0
 
